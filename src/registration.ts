@@ -1,32 +1,51 @@
+import { inputValidationRegex, Authentication } from './utils'
+
 const usernameInput = document.querySelector('#inputUsername') as HTMLInputElement;
 const passwordInput = document.querySelector('#inputPassword') as HTMLInputElement;
 const confirmPwInput = document.querySelector('#confirmPassword') as HTMLInputElement;
 const emailInput = document.querySelector('#inputEmail') as HTMLInputElement;
 const form = document.querySelector('#form-register') as HTMLFormElement;
 
-class Registration {
-	user: string;
-	password: string;
-	confirmed: string;;
-	email: string;
-	[index: string]: string;
+class Registration extends Authentication {
+	protected _confirmed: string;
+	protected _email: string;
 
-	constructor(
-		user: string,
-		password: string,
-		confirmed: string,
-		email: string 
-	) {
-		this.user = user;
-		this.password = password;
-		this.confirmed = confirmed;
-		this.email= email;
-	}
+	constructor() {
+		super();
+		this._confirmed = '';
+		this._email = '';
+	};
+
+	set confirmed(value: string) { this._confirmed = value; };
+	set email(value: string) { this._email = value; };
+
+	validateInput(key: string, value: string): Boolean {
+		return inputValidationRegex[key].test(value);
+	};
+
+	validateForm(): Boolean {
+		return (
+			this._username !== '' &&
+			this._password !== '' &&
+			this._confirmed !== '' &&
+			this._email !== '' &&
+			(this._password === this._confirmed)
+		);
+	};
+
+	submitForm() {
+		return {
+			username: this._username,
+			password: this._password,
+			confirmed: this._confirmed,
+			email: this._email
+		};
+	};
 }
 
-const user = new Registration('', '', '', '');
+const user = new Registration();
 
-export function validateForm() {
+export function registerNewUser() {
 	if (!usernameInput) throw Error('Username input Element missing');
 	if (!passwordInput) throw Error('Password input Element missing');
 	if (!confirmPwInput) throw Error('Confirm Password input Element missing');
@@ -35,76 +54,39 @@ export function validateForm() {
 
 	form.addEventListener('submit', (event) => {
 		event.preventDefault();
-		validateRegistry(user);
+
+		if (user.validateForm()) {
+			console.log('goodie', user.submitForm());
+		} else {
+			console.log('badbadbad', user.submitForm());
+		}
 	});
 
-	validateElement(usernameInput);
-	validateElement(passwordInput);
-	validateElement(confirmPwInput);
-	validateElement(emailInput);
+	validateField(usernameInput);
+	validateField(passwordInput);
+	validateField(confirmPwInput);
+	validateField(emailInput);
 }
 
-/** TODO: rename variables used in the function
- *  was intended as prototype :DDDD
- */
-function validateRegistry(x: Registration) {
-	let ct = 0;
-	for (let key in x) {
-		if (x[key] !== '') {
-			ct++;
-		}
-	}
-	if (ct === 4) {
-		if (x.password === x.confirmed) {
-			console.log(`registeredddd successfullyyyyy ct ${ct}`);
-			console.log(user);
-		} else {
-			console.log("error pass doesn't match confirmed");
-		}
-	} else {
-		console.log(`ct ${ct}`);
-	}
-}
-
-function validateElement(elem: HTMLInputElement) {
-	/** TODO: implement handler for wrong input
-	 *  tooltip or whatever needs to be done
+function validateField(elem: HTMLInputElement) {
+	/** TODO: implement handler for wrong inputs
+	 * 
 	 */
 	elem.addEventListener('blur', () => {
-			let valid: Boolean = validateInput(elem.value, elem.name);
+			let valid: Boolean = user.validateInput(elem.name, elem.value);
 			try {
-					if (!valid) throw "invalid_input";
+					if (!valid) throw "Invalid Input";
 			}
 			catch(err) {
 					elem.setAttribute("style", "border: 1px solid red;");
 			}
 			finally {
-				if (valid) {
-					elem.setAttribute("style", "border: 1px solid #777777;");
-					user[elem.name] = elem.value;
-				}
+				if (elem.name === 'username') valid ? (user.username = elem.value) : (user.username = '');
+				else if (elem.name === 'password') valid ? (user.password = elem.value) : (user.password = '');
+				else if (elem.name === 'confirmed') valid ? (user.confirmed = elem.value) : (user.confirmed = '');
+				else if (elem.name === 'email') valid ? (user.email = elem.value) : (user.email = '');
+
+				if (valid) elem.setAttribute("style", "border: 1px solid #777777;");
 			}
-	});
-}
-
-function validateInput(value: string, name: string): Boolean {
-	/** TODO: move interface and object to file 'utils'
-	 *  import them for use in registration and login
-	 */
-	interface IOptions {
-		[option: string]: RegExp;
-	}
-	const option: IOptions = {
-		user: /^[a-zA-Z\d.]{6,}$/,
-		password: /^(?!.*?[\^])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Z]+.{7,}$/,
-		confirmed: /^(?!.*?[\^])(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Z]+.{7,}$/,
-		email: /^.*$/
-	}
-	const regexString = option[name];
-
-	if (regexString.test(value)) {
-		return true;
-	}
-
-	return false;
+		});
 }

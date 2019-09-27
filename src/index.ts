@@ -1,3 +1,3 @@
-import { validateForm } from './registration';
+import { registerNewUser } from './registration';
 
-validateForm();
+registerNewUser();
