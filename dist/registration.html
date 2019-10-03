@@ -19,21 +19,45 @@
 
 </head>
 
-<body class="text-center">
-	<form class="form-register" id="form-register">
-		<label for="inputUsername" class="sr-only">Username</label>
-		<input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" autofocus>
+<body>
+	<form class="needs-validation" novalidate>
+		<div class="form-group">
+			<label for="inputUsername">Username</label>
+			<input type="text" name="username" id="username" class="form-control" placeholder="Username" autofocus>
+			<div class="invalid-feedback">
+				Must contain at least 6 characters (letters, numbers and '.' symbol).
+			</div>
+		</div>
 
-		<label for="inputPassword" class="sr-only">Password</label>
-		<input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password">
+		<div class="form-group">
+			<label for="inputPassword">Password</label>
+			<input type="password" name="password" id="password" class="form-control" placeholder="Password">
+			<div class="invalid-feedback">
+				Must start with a letter, contain at least 8 characters, at least one upper case letter, at least one lower case letter, at least one number, '^' symbol not allowed."
+			</div>
+		</div>
 
-		<label for="confirmPassword" class="sr-only">Confirm Password</label>
-		<input type="password" name="confirmed" id="confirmPassword" class="form-control" placeholder="Confirm Password">
+		<div class="form-group">
+			<label for="confirmPassword">Confirm Password</label>
+			<input type="password" name="confirmed" id="confirmed" class="form-control" placeholder="Confirm Password">
+			<div class="invalid-feedback">
+				Must start with a letter, contain at least 8 characters, at least one upper case letter, at least one lower case letter, at least one number, '^' symbol not allowed."
+			</div>
+		</div>
 
-		<label for="inputEmail" class="sr-only">Email address</label>
-		<input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address">
+		<div class="form-group">
+			<label for="inputEmail">Email address</label>
+			<input type="email" name="email" id="email" class="form-control" placeholder="Email address">
+			<div class="invalid-feedback">
+				Must be a valid email.
+			</div>
+		</div>
 
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+		<fieldset id="submit" disabled>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+		</fieldset>
+
+		<p class="pass-match">Passwords don't match, son</p>
 	</form>
 
   <script src="bundle.js"></script>

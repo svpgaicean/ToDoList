@@ -1,3 +1,3 @@
 import { registerNewUser } from './registration';
 
-registerNewUser();
+registerNewUser().then((user) => { console.log(user) });
