@@ -1,4 +1,4 @@
-import { inputValidationRegex, Authentication } from './utils'
+import { Authentication, IUser, inputValidationRegex } from './utils'
 
 const usernameInput = document.querySelector('#username') as HTMLInputElement;
 const passwordInput = document.querySelector('#password') as HTMLInputElement;
@@ -39,28 +39,31 @@ class Registration extends Authentication {
 		);
 	};
 
-	submitForm() {
+	submitForm(): IUser {
 		return {
 			username: this._username,
 			password: this._password,
-			email: this._email
+      email: this._email,
+      deleted: false
 		};
 	};
 }
 
 const user = new Registration();
 
-export function registerNewUser() {
-	form.addEventListener('submit', (event) => {
-		event.preventDefault();
+function registerNewUser() {
+  return new Promise((resolve, reject) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      
+      resolve(user.submitForm());
+    });
 
-		user.submitForm();
-	});
-
-	validateField(usernameInput);
-	validateField(passwordInput);
-	validateField(confirmPwInput);
-	validateField(emailInput);
+    validateField(usernameInput);
+    validateField(passwordInput);
+    validateField(confirmPwInput);
+    validateField(emailInput);
+  })
 }
 
 function checkAllFields() {
@@ -98,3 +101,5 @@ function validateField(elem: HTMLInputElement) {
 			}
 		});
 }
+
+export { registerNewUser };
