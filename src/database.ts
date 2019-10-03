@@ -70,9 +70,12 @@ class Database {
 									.openCursor().onsuccess = (e: any) => {
 										let cursor = e.target.result as IDBCursorWithValue;
 										if (cursor) {
-											if (cursor.value.username === username) {
-												resolve(true);
-											} else {
+											if (
+                        cursor.value.username === username &&
+                        cursor.value.deleted === false
+                      ) {
+                        resolve(true);
+                      } else {
 												cursor.continue();
 											}
 										} else {

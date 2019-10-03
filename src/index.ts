@@ -9,10 +9,10 @@ const dbBtn = document.querySelector('#db-btn') as HTMLFormElement;
 	let db = new Database('database1');
 
 	let user: IUser = {
-		username: 'a',
-		password: 'ab',
+		username: 'aafg',
+		password: 'abhgd',
 		email: 'agdf',
-		deleted: false
+		deleted: false 
 	};
 
 	dbBtn.addEventListener('click', () => { db.addUser(user) });
