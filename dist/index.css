@@ -8,25 +8,37 @@
 	color: #000;
 }
 
+html,
 body {
-	background-color: #f5f5f5;
+  height: 100%;
 }
 
-.navbar {
-	background-color: #b5c9df;
+body {
+  display: -ms-flexbox;
+  display: flex;
+	-ms-flex-align: center;
+	flex-direction: column;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
 }
 
-.form-register {
-  min-width: 330px;
+form {
+	margin: auto;
+	width: 350px;
 }
-.form-register .checkbox {
-  font-weight: 400;
+
+.invalid-feedback {
+	max-width: 350px;
 }
-.form-register .form-control {
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
+
+p {
+	margin-top: 15px;
+	text-align: center;
 }
-.form-register .form-control:focus {
-	z-index: 2;
+
+.login-error {
+	margin-top: 15px;
+	color: #dc3545;
 }
