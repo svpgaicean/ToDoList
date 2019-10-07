@@ -1,10 +1,12 @@
-import { inputValidationRegex, Authentication } from './utils'
+import { Authentication, IUser, inputValidationRegex } from './utils'
 
-const usernameInput = document.querySelector('#inputUsername') as HTMLInputElement;
-const passwordInput = document.querySelector('#inputPassword') as HTMLInputElement;
-const confirmPwInput = document.querySelector('#confirmPassword') as HTMLInputElement;
-const emailInput = document.querySelector('#inputEmail') as HTMLInputElement;
-const form = document.querySelector('#form-register') as HTMLFormElement;
+const usernameInput = document.querySelector('#username') as HTMLInputElement;
+const passwordInput = document.querySelector('#password') as HTMLInputElement;
+const confirmPwInput = document.querySelector('#confirmed') as HTMLInputElement;
+const emailInput = document.querySelector('#email') as HTMLInputElement;
+const form = document.querySelector('form') as HTMLFormElement;
+const submitButton = document.querySelector('#submit') as HTMLFormElement;
+const passwordMatchParagraph = document.querySelector('.pass-match') as HTMLElement;
 
 class Registration extends Authentication {
 	protected _confirmed: string;
@@ -23,70 +25,81 @@ class Registration extends Authentication {
 		return inputValidationRegex[key].test(value);
 	};
 
+	checkPasswordMatch(): Boolean {
+		return (this._password === this._confirmed);
+	}
+
 	validateForm(): Boolean {
 		return (
 			this._username !== '' &&
 			this._password !== '' &&
 			this._confirmed !== '' &&
 			this._email !== '' &&
-			(this._password === this._confirmed)
+			this.checkPasswordMatch()
 		);
 	};
 
-	submitForm() {
+	submitForm(): IUser {
 		return {
 			username: this._username,
 			password: this._password,
-			confirmed: this._confirmed,
-			email: this._email
+      email: this._email,
+      deleted: false
 		};
 	};
 }
 
 const user = new Registration();
 
-export function registerNewUser() {
-	if (!usernameInput) throw Error('Username input Element missing');
-	if (!passwordInput) throw Error('Password input Element missing');
-	if (!confirmPwInput) throw Error('Confirm Password input Element missing');
-	if (!emailInput) throw Error('Email input Element missing');
-	if (!form) throw Error('Form Element missing');
+function registerNewUser() {
+  return new Promise((resolve, reject) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      
+      resolve(user.submitForm());
+    });
 
-	form.addEventListener('submit', (event) => {
-		event.preventDefault();
+    validateField(usernameInput);
+    validateField(passwordInput);
+    validateField(confirmPwInput);
+    validateField(emailInput);
+  })
+}
 
-		if (user.validateForm()) {
-			console.log('goodie', user.submitForm());
+function checkAllFields() {
+	if (user.validateForm()) {
+		submitButton.disabled = false;
+		passwordMatchParagraph.style.display = 'none';
+	} else {
+		submitButton.disabled = true;
+		if (user.checkPasswordMatch()) {
+			passwordMatchParagraph.style.display = 'none';
 		} else {
-			console.log('badbadbad', user.submitForm());
+			passwordMatchParagraph.style.display = 'block';
 		}
-	});
-
-	validateField(usernameInput);
-	validateField(passwordInput);
-	validateField(confirmPwInput);
-	validateField(emailInput);
+	}
 }
 
 function validateField(elem: HTMLInputElement) {
-	/** TODO: implement handler for wrong inputs
-	 * 
-	 */
 	elem.addEventListener('blur', () => {
-			let valid: Boolean = user.validateInput(elem.name, elem.value);
+			let valid: Boolean = user.validateInput(elem.id, elem.value);
 			try {
-					if (!valid) throw "Invalid Input";
+				if (!valid) throw "Invalid Input";
 			}
 			catch(err) {
-					elem.setAttribute("style", "border: 1px solid red;");
+				elem.className = "form-control is-invalid";
 			}
 			finally {
-				if (elem.name === 'username') valid ? (user.username = elem.value) : (user.username = '');
-				else if (elem.name === 'password') valid ? (user.password = elem.value) : (user.password = '');
-				else if (elem.name === 'confirmed') valid ? (user.confirmed = elem.value) : (user.confirmed = '');
-				else if (elem.name === 'email') valid ? (user.email = elem.value) : (user.email = '');
+				if (elem.id === 'username') valid ? (user.username = elem.value) : (user.username = '');
+				else if (elem.id === 'password') valid ? (user.password = elem.value) : (user.password = '');
+				else if (elem.id === 'confirmed') valid ? (user.confirmed = elem.value) : (user.confirmed = '');
+				else if (elem.id === 'email') valid ? (user.email = elem.value) : (user.email = '');
 
-				if (valid) elem.setAttribute("style", "border: 1px solid #777777;");
+				if (valid) elem.className = "form-control is-valid";
+
+				checkAllFields();
 			}
 		});
 }
+
+export { registerNewUser };

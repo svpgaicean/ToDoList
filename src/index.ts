@@ -1,11 +1,11 @@
-// import { registerNewUser } from './registration';
+import { registerNewUser } from './registration';
 import { Database } from './database';
 import { IUser } from './utils';
 
 const dbBtn = document.querySelector('#db-btn') as HTMLFormElement;
 
 (function() {
-	// registerNewUser();
+	registerNewUser().then((user) => { console.log(user) });
 	let db = new Database('database1');
 
 	let user: IUser = {
