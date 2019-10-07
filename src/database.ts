@@ -1,4 +1,4 @@
-import { IUser } from './utils';
+import { IUser, ILogin } from './utils';
 
 class Database {
 	private IndxDb: IDBFactory;
@@ -24,11 +24,10 @@ class Database {
 				this.db.createObjectStore("list", {keyPath: 'id'});
 				this.db.createObjectStore("category", {keyPath: 'id', autoIncrement: true});
 
-				console.log('Database was set up successfully')
+				console.log('Database was set up successfully');
 			}
 
 			req.onsuccess = (e: any) => {
-				console.log('success');
 				resolve(this.db = e.target.result);
 			}
 			req.onerror = () => {
@@ -79,8 +78,33 @@ class Database {
 												cursor.continue();
 											}
 										} else {
-											console.log('No more entries!');
-											resolve(false);
+											resolve(false); // no more entries
+										}
+									}
+		});
+  };
+
+  verifyLoginInfo = (userInfo: ILogin) => {
+		return new Promise((resolve, reject) => {
+			this.db.transaction(["users"])
+									.objectStore("users")
+									.openCursor().onsuccess = (e: any) => {
+										let cursor = e.target.result as IDBCursorWithValue;
+										if (cursor) {
+											if (
+                        cursor.value.username === userInfo.username &&
+                        cursor.value.deleted === false
+                      ) {
+                        if (cursor.value.password === userInfo.password) {
+                          resolve(0); // login succesful
+                        } else {
+                          resolve(-1); // wrong password
+                        }
+                      } else {
+												cursor.continue();
+											}
+										} else {
+											resolve(-2); // username does not exist
 										}
 									}
 		});
