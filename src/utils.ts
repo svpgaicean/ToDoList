@@ -12,10 +12,10 @@ class Authentication {
 }
 
 interface IUser {
-  username: string,
-  password: string,
-  email: string,
-  deleted: boolean
+	username: string,
+	password: string,
+	email: string,
+	deleted: boolean
 }
 
 interface IOptions {
