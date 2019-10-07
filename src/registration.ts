@@ -61,7 +61,7 @@ if (emailInput) emailInput.addEventListener('blur', () => { validateField(emailI
 if (form) {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    
+
     db.addUser(user.submitForm() as IUser)
       .then((response) => {
         console.log(response);
@@ -86,21 +86,21 @@ function checkAllFields() {
 }
 
 function validateField(elem: HTMLInputElement) {
-    let valid: Boolean = user.validateInput(elem.id, elem.value);
-    try {
-      if (!valid) throw "Invalid Input";
-    }
-    catch (err) {
-      elem.className = "form-control is-invalid";
-    }
-    finally {
-      if (elem.id === 'username') valid ? (user.username = elem.value) : (user.username = '');
-      else if (elem.id === 'password') valid ? (user.password = elem.value) : (user.password = '');
-      else if (elem.id === 'confirmed') valid ? (user.confirmed = elem.value) : (user.confirmed = '');
-      else if (elem.id === 'email') valid ? (user.email = elem.value) : (user.email = '');
+  let valid: Boolean = user.validateInput(elem.id, elem.value);
+  try {
+    if (!valid) throw "Invalid Input";
+  }
+  catch (err) {
+    elem.className = "form-control is-invalid";
+  }
+  finally {
+    if (elem.id === 'username') valid ? (user.username = elem.value) : (user.username = '');
+    else if (elem.id === 'password') valid ? (user.password = elem.value) : (user.password = '');
+    else if (elem.id === 'confirmed') valid ? (user.confirmed = elem.value) : (user.confirmed = '');
+    else if (elem.id === 'email') valid ? (user.email = elem.value) : (user.email = '');
 
-      if (valid) elem.className = "form-control is-valid";
+    if (valid) elem.className = "form-control is-valid";
 
-      checkAllFields();
-    }
+    checkAllFields();
+  }
 }

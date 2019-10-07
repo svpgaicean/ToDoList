@@ -11,12 +11,12 @@ class Login extends Authentication {
     super();
   }
 
-	submitForm(): ILogin {
-		return {
-			username: this._username,
-			password: this._password,
-		};
-	};
+  submitForm(): ILogin {
+    return {
+      username: this._username,
+      password: this._password,
+    };
+  };
 }
 
 let db = new Database('database1');
@@ -30,7 +30,7 @@ if (loginForm) {
     event.preventDefault();
 
     db.verifyLoginInfo(user.submitForm())
-      .then( (resp) => {
+      .then((resp) => {
         handleInputs(resp as Number);
         if (resp === 0) {
           sessionStorage.setItem('login-token', 'valid');
